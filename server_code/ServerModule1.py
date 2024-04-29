@@ -2,6 +2,8 @@ import anvil.server
 from psycopg2 import pool
 import psycopg2
 import logging
+import os  
+import json 
 
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
@@ -11,11 +13,12 @@ import logging
 # Here is an example - you can replace it with your own:
 #
 @anvil.server.callable
-def say_hello(name):
+def say_hello(name):    
   dbPool = connectDB('db_config.json')
   connection = dbPool.getconn()
   cursor = connection.cursor()
-  cursor.execute(f'INSERT INTO public.test_table (test_field) VALUES ({name})')
+  paramPlaceholders='%s'
+  cursor.execute(f'INSERT INTO public.test_table (test_field) VALUES ({paramPlaceholders})',tuple([name]))
   logging.debug(cursor.query)
   connection.commit()
   return 42
